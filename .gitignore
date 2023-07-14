@@ -1,0 +1,15 @@
+# Editor/IDE specific files
+*.idea/
+*.sublime-project
+*.sublime-workspace
+*.vim
+*.vscode
+
+# OS specific files
+.DS_Store
+
+# Debug files
+*.log
+
+# Packages throughout
+node_modules/
