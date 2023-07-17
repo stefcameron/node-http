@@ -1,5 +1,6 @@
 import http from 'http';
 import process from 'process';
+import * as routes from './routes.mjs';
 
 //
 // ENV VARIABLES
@@ -11,19 +12,37 @@ const host = 'localhost';
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 8000;
 
 /**
- * Responds to 'GET /'
+ * Responds to all requests.
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
  */
-const handleGetHome = function (req, res) {
-  // writing response headers, status, then optional message, and additional headers
-  res.writeHead(200);
+const requestListener = function (req, res) {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  switch (url.pathname) {
+    case '/':
+      routes.handleGetRoot({ req, res, url });
+      break;
 
-  // write something to the response stream and signal end of content (i.e. close the request)
-  res.end('Hello, world!');
+    case '/users':
+      routes.handleGetUsers({ req, res, url });
+      break;
+
+    default: {
+      const match = url.pathname.match(/\/users\/(\d+)$/);
+      if (match) {
+        const id = parseInt(match[1], 10);
+        routes.handleGetUser({ req, res, url, id });
+        break;
+      }
+
+      res.writeHead(404);
+      res.end("These are not the droids you're looking for...");
+      break;
+    }
+  }
 };
 
-const server = http.createServer(handleGetHome);
+const server = http.createServer(requestListener);
 server.listen(port, host, () => {
-  console.log(`Listening on ${host}:${port}...`);
+  console.log(`Listening on http://${host}:${port}...`);
 });
