@@ -1,3 +1,5 @@
+import { users } from './data.mjs';
+
 /**
  * Responds to 'GET /'
  * @param {Object} params
@@ -13,26 +15,16 @@ export const handleGetRoot = function ({ req, res, url }) {
   res.end('Hello, world!');
 };
 
-const users = [
-  {
-    id: 1,
-    name: 'Fred',
-    email: 'fred@flitstone.com',
-    phone: '123-456-7890',
-  },
-  {
-    id: 2,
-    name: 'Wilma',
-    email: 'wilma@flitstone.com',
-    phone: '456-123-7890',
-  },
-  {
-    id: 3,
-    name: 'Barney',
-    email: 'barney@rubble.com',
-    phone: '111-123-4567',
-  },
-];
+/**
+ * Responds to 'GET /error'
+ * @param {Object} params
+ * @param {http.IncomingMessage} params.req
+ * @param {http.ServerResponse} params.res
+ * @param {URL} params.url
+ */
+export const handleGetError = function ({ req, res, url }) {
+  throw new Error('Exception!!');
+};
 
 /**
  * Responds to 'GET /users'
@@ -57,7 +49,8 @@ export const handleGetUsers = function ({ req, res, url }) {
 export const handleGetUser = function ({ req, res, url, id }) {
   const user = users.find((u) => u.id === id);
   if (user) {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.setHeader('Content-Type', 'application/json');
+    res.writeHead(200);
     res.end(JSON.stringify(user));
     return;
   }
