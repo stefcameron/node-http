@@ -1,5 +1,6 @@
 {
   "name": "node-http",
+  "private": true,
   "version": "1.0.0",
   "description": "Pure Node.js http-based server exploration",
   "main": "src/server.js",
